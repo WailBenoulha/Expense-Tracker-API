@@ -22,8 +22,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api/',include('expenses.urls')),
-    path('api/user/',include('users.urls')),
+    path('api/',include('expenses.urls')),
+    path('user/',include('users.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     # Optional UI:
     path('', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
