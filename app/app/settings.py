@@ -101,6 +101,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+import os
 
 DATABASES = {
     'default': {
@@ -108,7 +109,7 @@ DATABASES = {
         'NAME': 'expenses',
         'USER': 'wail',
         'PASSWORD': '0000',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
