@@ -29,23 +29,25 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
 class Expenses(models.Model):
     CATEGORIES_CHOICES = [
-        ('G','Groceries'),
-        ('L','Leisure'),
-        ('E','Electronics'),
-        ('U','Utilities'),
-        ('C','Clothing'),
-        ('H','Health'),
-        ('O','Others'),
+        ('Groceries','Groceries'),
+        ('Leisure','Leisure'),
+        ('Electronics','Electronics'),
+        ('Utilities','Utilities'),
+        ('Clothing','Clothing'),
+        ('Health','Health'),
+        ('Others','Others'),
     ]
+    name = models.CharField(max_length=100,null=True)
     coast = models.FloatField()
     date = models.DateField(auto_now_add=True)
-    category = models.CharField(max_length=1,choices=CATEGORIES_CHOICES,default='O')
+    category = models.CharField(max_length=100,choices=CATEGORIES_CHOICES,default='O')
     user = models.ForeignKey('CustomUser',on_delete=models.CASCADE,editable=False)
 
     def __str__(self):
         return f'{self.user}-{self.coast}-{self.date}'
 
 class Incomes(models.Model):  
+    name = models.CharField(max_length=100,null=True)
     coast = models.FloatField()
     date = models.DateField(auto_now_add=True)
     user = models.ForeignKey('CustomUser',on_delete=models.CASCADE,editable=False)

@@ -22,9 +22,6 @@ class ExpenseViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)    
 
-    # def total_in_month(self):
-    #     for exp in Expenses:   
-    #         if exp['date']
 
 class IncomesViewSet(viewsets.ModelViewSet):
     serializer_class = IncomesSerializer
@@ -43,38 +40,54 @@ class IncomesViewSet(viewsets.ModelViewSet):
 
 from datetime import date,timedelta
 
-class TotalCoast(viewsets.ViewSet):
-    serializer_class = ExpensesSerializer
-    queryset = Expenses.objects.all()
+class CostView(viewsets.ViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def list(self,request):
-        total_coast = Expenses.objects.all().aggregate(
-            total = Sum('coast')
-        )['total'] or 0
-        return Response({
-            'Total_coast':total_coast,
-        })
-    
-    def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).order_by('-id') 
- 
-from datetime import date,timedelta
-
-class CostInThreeMonth(viewsets.ViewSet):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    
     def list(self,request):
         enddate = date.today()
-        startdate = enddate - timedelta(days=90)
-        instance = Expenses.objects.filter(
-            date__range = [startdate,enddate]
+        startdate1 = enddate - timedelta(days=30)
+        startdate2 = enddate - timedelta(days=90)
+        # expenses total
+        total_expense = Expenses.objects.all().filter(user=self.request.user).aggregate(
+            total = Sum('coast')
+        )['total'] or 0
+        # incomes total
+        total_incomes = Incomes.objects.filter(user=self.request.user).aggregate(
+            total = Sum('coast')
+        )['total'] or 0
+        # expenses in one month
+        instance1 = Expenses.objects.filter(
+            user=self.request.user,
+            date__range = [startdate1,enddate]
         ).aggregate(total=Sum('coast'))['total'] or 0
-        return Response({'cost in 3 months':instance})
-    
-    def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
-    
-   
+        # incomes in one month
+        instance3 = Incomes.objects.filter(
+            user=self.request.user,
+            date__range = [startdate1,enddate]
+        ).aggregate(total=Sum('coast'))['total'] or 0
+        # expense in 3 months
+        instance2 = Expenses.objects.filter(
+            date__range = [startdate2,enddate],
+            user=self.request.user,
+        ).aggregate(total=Sum('coast'))['total'] or 0
+        # incomes in 3 months
+        instance4 = Incomes.objects.filter(
+            user=self.request.user,
+            date__range = [startdate2,enddate],
+        ).aggregate(total=Sum('coast'))['total'] or 0
+        # Net profit/loss
+        instance5 = total_incomes - total_expense
+        instance6 = instance3 - instance1
+        instance7 = instance4 - instance2
+        return Response({
+            'Total expenses':total_expense,
+            'Total incomes':total_incomes,
+            'expenses in 1 month':instance1,
+            'incomes in 1 month':instance3,
+            'expenses in 3 months':instance2,
+            'incomes in 3 months':instance4,
+            'Total Net income':instance5,
+            'Total Net income in 1 month':instance6,
+            'Total Net income in 3 months':instance7,
+        })   

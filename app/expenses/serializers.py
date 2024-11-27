@@ -10,6 +10,6 @@ class ExpensesSerializer(serializers.ModelSerializer):
 
 class IncomesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Expenses
+        model = Incomes
         fields = ['id','coast','date']
         read_only_fields = ['id']        
