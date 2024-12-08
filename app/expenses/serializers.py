@@ -13,3 +13,10 @@ class IncomesSerializer(serializers.ModelSerializer):
         model = Incomes
         fields = ['id','coast','date']
         read_only_fields = ['id']        
+
+class ExpensesImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Expenses
+        fields = ['id','coast','date','category']
+        read_only_fields = ['id']
+        extra_kwargs = {'image':{'required':'True'}}

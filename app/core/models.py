@@ -5,6 +5,13 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from .managers import CustomUserManager
+import uuid,os
+
+def image_file_path(instance,filename):
+    ext = os.path.splitext(filename)[1]
+    filename = f'{uuid.uuid4()}{ext}'   
+
+    return os.path.join('uploads','expense',filename)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -42,6 +49,7 @@ class Expenses(models.Model):
     date = models.DateField(auto_now_add=True)
     category = models.CharField(max_length=100,choices=CATEGORIES_CHOICES,default='O')
     user = models.ForeignKey('CustomUser',on_delete=models.CASCADE,editable=False)
+    image = models.ImageField(upload_to=image_file_path,blank=True,null=True)
 
     def __str__(self):
         return f'{self.user}-{self.coast}-{self.date}'
